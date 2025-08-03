@@ -12,6 +12,8 @@ app = FastAPI()
 origins = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]
 
 app.add_middleware(
@@ -29,9 +31,12 @@ app.add_middleware(
 app.include_router(question_router.router)
 app.include_router(answer_router.router)
 app.include_router(user_router.router)
-# app.mount("/assets", StaticFiles(directory = "frontend/src/assets"))  # 주석 처리
+
+# 빌드된 정적 파일들을 서빙
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+app.mount("/static", StaticFiles(directory="frontend/dist"), name="static")
 
 @app.get("/")
 def index():
-    return FileResponse("frontend/src/index.html")
+    return FileResponse("frontend/dist/index.html")
 
